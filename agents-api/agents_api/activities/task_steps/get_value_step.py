@@ -11,8 +11,13 @@ from ...env import testing
 async def get_value_step(
     context: StepContext,
 ) -> StepOutcome:
-    key: str = context.current_step.get
-    raise NotImplementedError("Not implemented yet")
+    try:
+        assert hasattr(context.current_step, 'get'), "current_step does not have 'get' attribute"
+        key: str = context.current_step.get
+        raise NotImplementedError("Not implemented yet")
+    except AttributeError:
+        activity.logger.error("current_step does not have 'get' attribute")
+        return StepOutcome(error="Invalid step type: missing 'get' attribute.")
 
 
 # Note: This is here just for clarity. We could have just imported get_value_step directly

@@ -57,7 +57,7 @@ async def prompt_step(context: StepContext) -> StepOutcome:
         for tool in agent_tools
     ]
 
-    if context.current_step.settings:
+    if hasattr(context.current_step, 'settings') and context.current_step.settings:
         passed_settings: dict = context.current_step.settings.model_dump(
             exclude_unset=True
         )
@@ -80,13 +80,16 @@ async def prompt_step(context: StepContext) -> StepOutcome:
         **completion_data,
     )
 
-    if context.current_step.unwrap:
+    if hasattr(context.current_step, 'unwrap') and context.current_step.unwrap:
         if response.choices[0].finish_reason == "tool_calls":
             raise ApplicationError("Tool calls cannot be unwrapped")
 
         response = response.choices[0].message.content
 
+    # Ensure 'model_dump' exists on 'response'
+    output = response.model_dump() if hasattr(response, "model_dump") else response
+
     return StepOutcome(
-        output=response.model_dump() if hasattr(response, "model_dump") else response,
+        output=output,
         next=None,
     )

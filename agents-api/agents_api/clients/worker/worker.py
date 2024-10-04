@@ -9,13 +9,12 @@ from .types import (
 
 async def add_summarization_task(data: MemoryManagementTaskArgs):
     async with httpx.AsyncClient(timeout=30) as client:
-        data = MemoryManagementTask(
+        task = MemoryManagementTask(  # Renamed variable from 'data' to 'task'
             name="memory_management.v1",
             args=data,
         )
 
         await client.post(
             f"{temporal_worker_url}/task",
-            headers={"Content-Type": "json"},
-            data=data.model_dump_json(),
+            json=task.model_dump(),  # Changed from 'data=' to 'json='
         )

@@ -36,7 +36,7 @@ async def acompletion(
         model = f"openai/{model}"  # FIXME: This is for litellm
 
     supported_params = get_supported_openai_params(model)
-    settings = {k: v for k, v in kwargs.items() if k in supported_params}
+    settings = {k: v for k, v in kwargs.items() if supported_params and k in supported_params}  # Updated to handle None
 
     return await _acompletion(
         model=model,
@@ -76,7 +76,7 @@ async def aembedding(
         **settings,
     )
 
-    embedding_list: list[dict[Literal["embedding"], list[float]]] = response.data
+    embedding_list: list[dict[Literal["embedding"], list[float]]] = response.data or []  # Ensure non-None
 
     # FIXME: Truncation should be handled by litellm
     result = [embedding["embedding"][:dimensions] for embedding in embedding_list]

@@ -17,7 +17,7 @@ from ..env import testing
 class RequestArgs(TypedDict):
     content: Optional[str]
     data: Optional[dict[str, Any]]
-    json_: Optional[dict[str, Any]]
+    json: Optional[dict[str, Any]]  # Renamed from 'json_' to 'json'
     cookies: Optional[dict[str, str]]
     params: Optional[Union[str, dict[str, Any]]]
 

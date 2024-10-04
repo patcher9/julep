@@ -54,6 +54,7 @@ async def base_evaluate(
                 return [evaluator.eval(expr) for expr in exprs]
 
             case dict() as d if all(isinstance(v, dict) for v in d.values()):
+                d: dict[str, dict[str, str]] = d  # Inform type checker
                 return {
                     k: {ik: evaluator.eval(iv) for ik, iv in v.items()}
                     for k, v in d.items()

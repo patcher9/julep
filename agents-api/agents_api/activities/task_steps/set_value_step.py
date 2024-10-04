@@ -17,7 +17,8 @@ async def set_value_step(
     override_expr: dict[str, str] | None = None,
 ) -> StepOutcome:
     try:
-        expr = override_expr if override_expr is not None else context.current_step.set
+        expr = override_expr if override_expr is not None else context.current_step.set  # Ensure 'set' attribute exists
+        # TODO: Verify that 'current_step' has 'set' attribute for all possible step types
 
         values = context.model_dump() | additional_values
         output = simple_eval_dict(expr, values)

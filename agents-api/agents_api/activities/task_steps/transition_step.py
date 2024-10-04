@@ -1,3 +1,4 @@
+from typing import Awaitable, Callable
 from beartype import beartype
 from temporalio import activity
 
@@ -27,6 +28,6 @@ async def transition_step(
 original_transition_step = transition_step
 mock_transition_step = transition_step
 
-transition_step = activity.defn(name="transition_step")(
-    transition_step if not testing else mock_transition_step
-)
+transition_step: Callable[[StepContext], Awaitable[Transition]] = activity.defn(
+    name="transition_step"
+)(transition_step if not testing else mock_transition_step)

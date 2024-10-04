@@ -42,7 +42,7 @@ async def tool_call_step(context: StepContext) -> StepOutcome:
     call_id = generate_call_id()
 
     tool_call = {
-        tool.type: {
+        tool.type: {  # FIXME: Ensure 'Tool' class has 'type' attribute
             "arguments": arguments,
             "name": tool_name,
         },

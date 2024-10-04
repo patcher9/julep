@@ -18,7 +18,7 @@ async def evaluate_step(
         expr = (
             override_expr
             if override_expr is not None
-            else context.current_step.evaluate
+            else context.current_step.evaluate  # FIXME: Ensure 'evaluate' exists (maybe cast to correct type)
         )
 
         values = context.model_dump() | additional_values
