@@ -240,10 +240,11 @@ async def perform_action(
 ) -> RemoteBrowserOutput:
     async with async_playwright() as p:
         connect_url = setup.connect_url if setup.connect_url else arguments.connect_url
+        if not connect_url:
+            raise RuntimeError("connect_url is empty")
+
         browser = await p.chromium.connect_over_cdp(connect_url)
-
         automation = PlaywrightActions(browser, width=setup.width, height=setup.height)
-
         await automation.initialize()
 
         result = await automation.perform_action(
