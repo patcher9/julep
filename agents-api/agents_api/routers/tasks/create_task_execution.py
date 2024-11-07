@@ -6,7 +6,7 @@ from beartype import beartype
 from fastapi import BackgroundTasks, Depends, HTTPException, status
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
-from pycozo.client import QueryException
+from pycozo_async.client import QueryException
 from starlette.status import HTTP_201_CREATED
 from temporalio.client import WorkflowHandle
 

@@ -22,8 +22,8 @@ from tests.fixtures import cozo_client, test_agent, test_developer_id
 
 
 @test("model: create agent")
-def _(client=cozo_client, developer_id=test_developer_id):
-    create_agent(
+async def _(client=cozo_client, developer_id=test_developer_id):
+    await create_agent(
         developer_id=developer_id,
         data=CreateAgentRequest(
             name="test agent",
@@ -35,8 +35,8 @@ def _(client=cozo_client, developer_id=test_developer_id):
 
 
 @test("model: create agent with instructions")
-def _(client=cozo_client, developer_id=test_developer_id):
-    create_agent(
+async def _(client=cozo_client, developer_id=test_developer_id):
+    await create_agent(
         developer_id=developer_id,
         data=CreateAgentRequest(
             name="test agent",
@@ -49,8 +49,8 @@ def _(client=cozo_client, developer_id=test_developer_id):
 
 
 @test("model: create or update agent")
-def _(client=cozo_client, developer_id=test_developer_id):
-    create_or_update_agent(
+async def _(client=cozo_client, developer_id=test_developer_id):
+    await create_or_update_agent(
         developer_id=developer_id,
         agent_id=uuid4(),
         data=CreateOrUpdateAgentRequest(
@@ -64,24 +64,24 @@ def _(client=cozo_client, developer_id=test_developer_id):
 
 
 @test("model: get agent not exists")
-def _(client=cozo_client, developer_id=test_developer_id):
+async def _(client=cozo_client, developer_id=test_developer_id):
     agent_id = uuid4()
 
     with raises(Exception):
-        get_agent(agent_id=agent_id, developer_id=developer_id, client=client)
+        await get_agent(agent_id=agent_id, developer_id=developer_id, client=client)
 
 
 @test("model: get agent exists")
-def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
-    result = get_agent(agent_id=agent.id, developer_id=developer_id, client=client)
+async def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
+    result = await get_agent(agent_id=agent.id, developer_id=developer_id, client=client)
 
     assert result is not None
     assert isinstance(result, Agent)
 
 
 @test("model: delete agent")
-def _(client=cozo_client, developer_id=test_developer_id):
-    temp_agent = create_agent(
+async def _(client=cozo_client, developer_id=test_developer_id):
+    temp_agent = await create_agent(
         developer_id=developer_id,
         data=CreateAgentRequest(
             name="test agent",
@@ -93,16 +93,16 @@ def _(client=cozo_client, developer_id=test_developer_id):
     )
 
     # Delete the agent
-    delete_agent(agent_id=temp_agent.id, developer_id=developer_id, client=client)
+    await delete_agent(agent_id=temp_agent.id, developer_id=developer_id, client=client)
 
     # Check that the agent is deleted
     with raises(Exception):
-        get_agent(agent_id=temp_agent.id, developer_id=developer_id, client=client)
+        await get_agent(agent_id=temp_agent.id, developer_id=developer_id, client=client)
 
 
 @test("model: update agent")
-def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
-    result = update_agent(
+async def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
+    result = await update_agent(
         agent_id=agent.id,
         developer_id=developer_id,
         data=UpdateAgentRequest(
@@ -118,7 +118,7 @@ def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
     assert result is not None
     assert isinstance(result, ResourceUpdatedResponse)
 
-    agent = get_agent(
+    agent = await get_agent(
         agent_id=agent.id,
         developer_id=developer_id,
         client=client,
@@ -128,8 +128,8 @@ def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
 
 
 @test("model: patch agent")
-def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
-    result = patch_agent(
+async def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
+    result = await patch_agent(
         agent_id=agent.id,
         developer_id=developer_id,
         data=PatchAgentRequest(
@@ -144,7 +144,7 @@ def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
     assert result is not None
     assert isinstance(result, ResourceUpdatedResponse)
 
-    agent = get_agent(
+    agent = await get_agent(
         agent_id=agent.id,
         developer_id=developer_id,
         client=client,
@@ -154,10 +154,10 @@ def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
 
 
 @test("model: list agents")
-def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
+async def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
     """Tests listing all agents associated with a developer in the database. Verifies that the correct list of agents is retrieved."""
 
-    result = list_agents(developer_id=developer_id, client=client)
+    result = await list_agents(developer_id=developer_id, client=client)
 
     assert isinstance(result, list)
     assert all(isinstance(agent, Agent) for agent in result)

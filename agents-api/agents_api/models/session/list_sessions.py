@@ -5,7 +5,7 @@ from uuid import UUID
 
 from beartype import beartype
 from fastapi import HTTPException
-from pycozo.client import QueryException
+from pycozo_async.client import QueryException
 from pydantic import ValidationError
 
 from ...common.protocol.sessions import make_session

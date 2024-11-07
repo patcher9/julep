@@ -78,7 +78,7 @@ async def execute_system(
 
         # Handle chat operations
         if system.operation == "chat" and system.resource == "session":
-            developer = get_developer(developer_id=arguments.pop("developer_id"))
+            developer = await get_developer(developer_id=arguments.pop("developer_id"))
             session_id = arguments.pop("session_id")
             x_custom_api_key = arguments.pop("x_custom_api_key", None)
             chat_input = ChatInput(**arguments)

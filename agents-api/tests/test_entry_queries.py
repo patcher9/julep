@@ -21,7 +21,7 @@ MODEL = "gpt-4o-mini"
 
 
 @test("model: create entry")
-def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
+async def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
     """
     Tests the addition of a new entry to the database.
     Verifies that the entry can be successfully added using the create_entries function.
@@ -34,7 +34,7 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
         content="test entry content",
     )
 
-    create_entries(
+    await create_entries(
         developer_id=developer_id,
         session_id=session.id,
         data=[test_entry],
@@ -44,7 +44,7 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
 
 
 @test("model: create entry, update session")
-def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
+async def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
     """
     Tests the addition of a new entry to the database.
     Verifies that the entry can be successfully added using the create_entries function.
@@ -60,7 +60,7 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
     # TODO: We should make sessions.updated_at also a updated_at_ms field to avoid this sleep
     time.sleep(1)
 
-    create_entries(
+    await create_entries(
         developer_id=developer_id,
         session_id=session.id,
         data=[test_entry],
@@ -78,7 +78,7 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
 
 
 @test("model: get entries")
-def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
+async def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
     """
     Tests the retrieval of entries from the database.
     Verifies that entries matching specific criteria can be successfully retrieved.
@@ -98,14 +98,14 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
         source="internal",
     )
 
-    create_entries(
+    await create_entries(
         developer_id=developer_id,
         session_id=session.id,
         data=[test_entry, internal_entry],
         client=client,
     )
 
-    result = list_entries(
+    result = await list_entries(
         developer_id=developer_id,
         session_id=session.id,
         client=client,
@@ -116,7 +116,7 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
 
 
 @test("model: get history")
-def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
+async def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
     """
     Tests the retrieval of entries from the database.
     Verifies that entries matching specific criteria can be successfully retrieved.
@@ -136,14 +136,14 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
         source="internal",
     )
 
-    create_entries(
+    await create_entries(
         developer_id=developer_id,
         session_id=session.id,
         data=[test_entry, internal_entry],
         client=client,
     )
 
-    result = get_history(
+    result = await get_history(
         developer_id=developer_id,
         session_id=session.id,
         client=client,
@@ -155,7 +155,7 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
 
 
 @test("model: delete entries")
-def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
+async def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
     """
     Tests the deletion of entries from the database.
     Verifies that entries can be successfully deleted using the delete_entries function.
@@ -175,7 +175,7 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
         source="internal",
     )
 
-    created_entries = create_entries(
+    created_entries = await create_entries(
         developer_id=developer_id,
         session_id=session.id,
         data=[test_entry, internal_entry],
@@ -184,14 +184,14 @@ def _(client=cozo_client, developer_id=test_developer_id, session=test_session):
 
     entry_ids = [entry.id for entry in created_entries]
 
-    delete_entries(
+    await delete_entries(
         developer_id=developer_id,
         session_id=session.id,
         entry_ids=entry_ids,
         client=client,
     )
 
-    result = list_entries(
+    result = await list_entries(
         developer_id=developer_id,
         session_id=session.id,
         client=client,

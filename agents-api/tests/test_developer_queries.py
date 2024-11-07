@@ -9,8 +9,8 @@ from tests.fixtures import cozo_client, test_developer_id
 
 
 @test("model: get developer")
-def _(client=cozo_client, developer_id=test_developer_id):
-    developer = get_developer(
+async def _(client=cozo_client, developer_id=test_developer_id):
+    developer = await get_developer(
         developer_id=developer_id,
         client=client,
     )
@@ -20,17 +20,17 @@ def _(client=cozo_client, developer_id=test_developer_id):
 
 
 @test("model: verify developer exists")
-def _(client=cozo_client, developer_id=test_developer_id):
-    verify_developer(
+async def _(client=cozo_client, developer_id=test_developer_id):
+    await verify_developer(
         developer_id=developer_id,
         client=client,
     )
 
 
 @test("model: verify developer not exists")
-def _(client=cozo_client):
+async def _(client=cozo_client):
     with raises(Exception):
-        verify_developer(
+        await verify_developer(
             developer_id=uuid4(),
             client=client,
         )

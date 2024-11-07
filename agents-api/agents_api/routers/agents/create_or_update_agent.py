@@ -21,7 +21,7 @@ async def create_or_update_agent(
     x_developer_id: Annotated[UUID, Depends(get_developer_id)],
 ) -> ResourceCreatedResponse:
     # TODO: Validate model name
-    agent = models.agent.create_or_update_agent(
+    agent = await models.agent.create_or_update_agent(
         developer_id=x_developer_id,
         agent_id=agent_id,
         data=data,

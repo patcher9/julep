@@ -6,7 +6,7 @@ from types import SimpleNamespace
 from uuid import UUID
 
 from beartype import beartype
-from pycozo import Client
+from pycozo_async import Client
 
 # Define a mock client for testing purposes, simulating Cozo API client behavior.
 _fake_client: SimpleNamespace = SimpleNamespace()

@@ -38,7 +38,7 @@ async def embed_docs(
         await asyncio.gather(*[embed_batch(snippets) for snippets in batched_snippets]),
     )
 
-    embed_snippets_query(
+    await embed_snippets_query(
         developer_id=payload.developer_id,
         doc_id=payload.doc_id,
         snippet_indices=indices,

@@ -3,7 +3,7 @@ from uuid import UUID, uuid4
 
 from cozo_migrate.api import apply, init
 from fastapi.testclient import TestClient
-from pycozo import Client as CozoClient
+from pycozo_async import Client as CozoClient
 from temporalio.client import WorkflowHandle
 from ward import fixture
 
@@ -57,7 +57,7 @@ def cozo_client(migrations_dir: str = "./migrations"):
 
 
 @fixture(scope="global")
-def test_developer_id(cozo_client=cozo_client):
+async def test_developer_id(cozo_client=cozo_client):
     if not multi_tenant_mode:
         yield UUID(int=0)
         return
@@ -73,7 +73,7 @@ def test_developer_id(cozo_client=cozo_client):
 
     yield developer_id
 
-    cozo_client.run(
+    await cozo_client.run(
         f"""
     ?[developer_id, email] <- [["{str(developer_id)}", "developers@julep.ai"]]
     :delete developers {{ developer_id, email }}
@@ -82,8 +82,8 @@ def test_developer_id(cozo_client=cozo_client):
 
 
 @fixture(scope="global")
-def test_developer(cozo_client=cozo_client, developer_id=test_developer_id):
-    return get_developer(
+async def test_developer(cozo_client=cozo_client, developer_id=test_developer_id):
+    return await get_developer(
         developer_id=developer_id,
         client=cozo_client,
     )
@@ -98,8 +98,8 @@ def patch_embed_acompletion():
 
 
 @fixture(scope="global")
-def test_agent(cozo_client=cozo_client, developer_id=test_developer_id):
-    agent = create_agent(
+async def test_agent(cozo_client=cozo_client, developer_id=test_developer_id):
+    agent = await create_agent(
         developer_id=developer_id,
         data=CreateAgentRequest(
             model="gpt-4o-mini",
@@ -112,7 +112,7 @@ def test_agent(cozo_client=cozo_client, developer_id=test_developer_id):
 
     yield agent
 
-    delete_agent(
+    await delete_agent(
         developer_id=developer_id,
         agent_id=agent.id,
         client=cozo_client,
@@ -165,12 +165,12 @@ def test_session(
 
 
 @fixture(scope="global")
-def test_doc(
+async def test_doc(
     client=cozo_client,
     developer_id=test_developer_id,
     agent=test_agent,
 ):
-    doc = create_doc(
+    doc = await create_doc(
         developer_id=developer_id,
         owner_type="agent",
         owner_id=agent.id,
@@ -182,7 +182,7 @@ def test_doc(
 
     yield doc
 
-    delete_doc(
+    await delete_doc(
         developer_id=developer_id,
         doc_id=doc.id,
         owner_type="agent",
@@ -192,12 +192,12 @@ def test_doc(
 
 
 @fixture(scope="global")
-def test_user_doc(
+async def test_user_doc(
     client=cozo_client,
     developer_id=test_developer_id,
     user=test_user,
 ):
-    doc = create_doc(
+    doc = await create_doc(
         developer_id=developer_id,
         owner_type="user",
         owner_id=user.id,
@@ -209,7 +209,7 @@ def test_user_doc(
 
     yield doc
 
-    delete_doc(
+    await delete_doc(
         developer_id=developer_id,
         doc_id=doc.id,
         owner_type="user",
@@ -248,7 +248,7 @@ def test_task(
 
 
 @fixture(scope="global")
-def test_execution(
+async def test_execution(
     client=cozo_client,
     developer_id=test_developer_id,
     task=test_task,
@@ -273,7 +273,7 @@ def test_execution(
 
     yield execution
 
-    client.run(
+    await client.run(
         f"""
     ?[execution_id] <- ["{str(execution.id)}"]
     :delete executions {{ execution_id  }}
@@ -282,7 +282,7 @@ def test_execution(
 
 
 @fixture(scope="test")
-def test_execution_started(
+async def test_execution_started(
     client=cozo_client,
     developer_id=test_developer_id,
     task=test_task,
@@ -322,7 +322,7 @@ def test_execution_started(
 
     yield execution
 
-    client.run(
+    await client.run(
         f"""
     ?[execution_id, task_id] <- [[to_uuid("{str(execution.id)}"), to_uuid("{str(task.id)}")]]
     :delete executions {{ execution_id, task_id }}
@@ -331,12 +331,12 @@ def test_execution_started(
 
 
 @fixture(scope="global")
-def test_transition(
+async def test_transition(
     client=cozo_client,
     developer_id=test_developer_id,
     execution=test_execution,
 ):
-    transition = create_execution_transition(
+    transition =await  create_execution_transition(
         developer_id=developer_id,
         execution_id=execution.id,
         data=CreateTransitionRequest(
@@ -350,7 +350,7 @@ def test_transition(
 
     yield transition
 
-    client.run(
+    await client.run(
         f"""
     ?[transition_id] <- ["{str(transition.id)}"]
     :delete transitions {{ transition_id  }}
@@ -402,7 +402,7 @@ def client(cozo_client=cozo_client):
 
 @fixture(scope="global")
 def make_request(client=client, developer_id=test_developer_id):
-    def _make_request(method, url, **kwargs):
+    async def _make_request(method, url, **kwargs):
         headers = kwargs.pop("headers", {})
         headers = {
             **headers,
@@ -412,6 +412,6 @@ def make_request(client=client, developer_id=test_developer_id):
         if multi_tenant_mode:
             headers["X-Developer-Id"] = str(developer_id)
 
-        return client.request(method, url, headers=headers, **kwargs)
+        return await client.request(method, url, headers=headers, **kwargs)
 
     return _make_request

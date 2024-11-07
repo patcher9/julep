@@ -44,7 +44,7 @@ async def _(
 ):
     (embed, _) = mocks
 
-    chat_context = prepare_chat_context(
+    chat_context = await prepare_chat_context(
         developer_id=developer_id,
         session_id=session.id,
         client=client,
@@ -83,7 +83,7 @@ async def _(
 ):
     (embed, _) = mocks
 
-    chat_context = prepare_chat_context(
+    chat_context = await prepare_chat_context(
         developer_id=developer_id,
         session_id=session.id,
         client=client,
@@ -140,7 +140,7 @@ async def _(
 
 
 @test("model: prepare chat context")
-def _(
+async def _(
     client=cozo_client,
     developer_id=test_developer_id,
     agent=test_agent,
@@ -148,7 +148,7 @@ def _(
     tool=test_tool,
     user=test_user,
 ):
-    context = prepare_chat_context(
+    context = await prepare_chat_context(
         developer_id=developer_id,
         session_id=session.id,
         client=client,

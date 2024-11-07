@@ -21,10 +21,10 @@ from tests.fixtures import (
 
 
 @test("model: create docs")
-def _(
+async def _(
     client=cozo_client, developer_id=test_developer_id, agent=test_agent, user=test_user
 ):
-    create_doc(
+    await create_doc(
         developer_id=developer_id,
         owner_type="agent",
         owner_id=agent.id,
@@ -32,7 +32,7 @@ def _(
         client=client,
     )
 
-    create_doc(
+    await create_doc(
         developer_id=developer_id,
         owner_type="user",
         owner_id=user.id,
@@ -42,8 +42,8 @@ def _(
 
 
 @test("model: get docs")
-def _(client=cozo_client, doc=test_doc, developer_id=test_developer_id):
-    get_doc(
+async def _(client=cozo_client, doc=test_doc, developer_id=test_developer_id):
+    await get_doc(
         developer_id=developer_id,
         doc_id=doc.id,
         client=client,
@@ -51,8 +51,8 @@ def _(client=cozo_client, doc=test_doc, developer_id=test_developer_id):
 
 
 @test("model: delete doc")
-def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
-    doc = create_doc(
+async def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
+    doc = await create_doc(
         developer_id=developer_id,
         owner_type="agent",
         owner_id=agent.id,
@@ -60,7 +60,7 @@ def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
         client=client,
     )
 
-    delete_doc(
+    await delete_doc(
         developer_id=developer_id,
         doc_id=doc.id,
         owner_type="agent",
@@ -70,10 +70,10 @@ def _(client=cozo_client, developer_id=test_developer_id, agent=test_agent):
 
 
 @test("model: list docs")
-def _(
+async def _(
     client=cozo_client, developer_id=test_developer_id, doc=test_doc, agent=test_agent
 ):
-    result = list_docs(
+    result = await list_docs(
         developer_id=developer_id,
         owner_type="agent",
         owner_id=agent.id,
@@ -85,8 +85,8 @@ def _(
 
 
 @test("model: search docs by text")
-def _(client=cozo_client, agent=test_agent, developer_id=test_developer_id):
-    create_doc(
+async def _(client=cozo_client, agent=test_agent, developer_id=test_developer_id):
+    await create_doc(
         developer_id=developer_id,
         owner_type="agent",
         owner_id=agent.id,
@@ -96,7 +96,7 @@ def _(client=cozo_client, agent=test_agent, developer_id=test_developer_id):
         client=client,
     )
 
-    result = search_docs_by_text(
+    result = await search_docs_by_text(
         developer_id=developer_id,
         owners=[("agent", agent.id)],
         query="funny",
@@ -107,8 +107,8 @@ def _(client=cozo_client, agent=test_agent, developer_id=test_developer_id):
 
 
 @test("model: search docs by embedding")
-def _(client=cozo_client, agent=test_agent, developer_id=test_developer_id):
-    doc = create_doc(
+async def _(client=cozo_client, agent=test_agent, developer_id=test_developer_id):
+    doc = await create_doc(
         developer_id=developer_id,
         owner_type="agent",
         owner_id=agent.id,
@@ -117,7 +117,7 @@ def _(client=cozo_client, agent=test_agent, developer_id=test_developer_id):
     )
 
     ### Add embedding to the snippet
-    embed_snippets(
+    await embed_snippets(
         developer_id=developer_id,
         doc_id=doc.id,
         snippet_indices=[0],
@@ -128,7 +128,7 @@ def _(client=cozo_client, agent=test_agent, developer_id=test_developer_id):
     ### Search
     query_embedding = [0.99] * EMBEDDING_SIZE
 
-    result = search_docs_by_embedding(
+    result = await search_docs_by_embedding(
         developer_id=developer_id,
         owners=[("agent", agent.id)],
         query_embedding=query_embedding,
@@ -139,11 +139,11 @@ def _(client=cozo_client, agent=test_agent, developer_id=test_developer_id):
 
 
 @test("model: embed snippets")
-def _(client=cozo_client, developer_id=test_developer_id, doc=test_doc):
+async def _(client=cozo_client, developer_id=test_developer_id, doc=test_doc):
     snippet_indices = [0]
     embeddings = [[1.0] * EMBEDDING_SIZE]
 
-    result = embed_snippets(
+    result = await embed_snippets(
         developer_id=developer_id,
         doc_id=doc.id,
         snippet_indices=snippet_indices,

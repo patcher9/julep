@@ -2,7 +2,7 @@ import inspect
 import re
 import time
 from functools import partialmethod, wraps
-from typing import Any, Callable, ParamSpec, Type, TypeVar
+from typing import Any, Awaitable, Callable, ParamSpec, Type, TypeVar
 from uuid import UUID
 
 import pandas as pd
@@ -186,12 +186,17 @@ def make_cozo_json_query(fields):
 
 
 def cozo_query(
-    func: Callable[P, tuple[str | list[str | None], dict]] | None = None,
+    func: Callable[P, tuple[str | list[str | None], dict]]
+    | Callable[P, Awaitable[tuple[str | list[str | None], dict]]]
+    | None = None,
     debug: bool | None = None,
     only_on_error: bool = False,
     timeit: bool = False,
 ):
-    def cozo_query_dec(func: Callable[P, tuple[str | list[Any], dict]]):
+    def cozo_query_dec(
+        func: Callable[P, tuple[str | list[Any], dict]]
+        | Callable[P, Awaitable[tuple[str | list[Any], dict]]],
+    ):
         """
         Decorator that wraps a function that takes arbitrary arguments, and
         returns a (query string, variables) tuple.
@@ -218,8 +223,14 @@ def cozo_query(
             retry=retry_if_exception(is_resource_busy),
         )
         @wraps(func)
-        def wrapper(*args: P.args, client=None, **kwargs: P.kwargs) -> pd.DataFrame:
-            queries, variables = func(*args, **kwargs)
+        async def wrapper(
+            *args: P.args, client=None, **kwargs: P.kwargs
+        ) -> pd.DataFrame:
+            queries, variables = (
+                await func(*args, **kwargs)
+                if inspect.iscoroutinefunction(func)
+                else func(*args, **kwargs)
+            )
 
             if isinstance(queries, str):
                 query = queries
@@ -242,7 +253,7 @@ def cozo_query(
                 client = client or cozo.get_cozo_client()
 
                 start = timeit and time.perf_counter()
-                result = client.run(query, variables)
+                result = await client.run(query, variables)
                 end = timeit and time.perf_counter()
 
                 timeit and print(f"Cozo query time: {end - start:.2f} seconds")
@@ -290,10 +301,16 @@ def wrap_in_class(
     transform: Callable[[dict], dict] | None = None,
     _kind: str | None = None,
 ):
-    def decorator(func: Callable[P, pd.DataFrame]):
+    def decorator(
+        func: Callable[P, pd.DataFrame] | Callable[P, Awaitable[pd.DataFrame]],
+    ):
         @wraps(func)
-        def wrapper(*args: P.args, **kwargs: P.kwargs) -> ModelT | list[ModelT]:
-            df = func(*args, **kwargs)
+        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> ModelT | list[ModelT]:
+            df = (
+                await func(*args, **kwargs)
+                if inspect.iscoroutinefunction(func)
+                else func(*args, **kwargs)
+            )
 
             # Convert df to list of dicts
             if _kind:
@@ -328,13 +345,17 @@ def rewrap_exceptions(
     ],
     /,
 ):
-    def decorator(func: Callable[P, T]):
+    def decorator(func: Callable[P, T] | Callable[P, Awaitable[T]]):
         @wraps(func)
-        def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             nonlocal mapping
 
             try:
-                result: T = func(*args, **kwargs)
+                result: T = (
+                    await func(*args, **kwargs)
+                    if inspect.iscoroutinefunction(func)
+                    else func(*args, **kwargs)
+                )
 
             except BaseException as error:
                 for check, transform in mapping.items():

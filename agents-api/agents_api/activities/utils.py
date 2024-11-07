@@ -9,7 +9,7 @@ import statistics
 import string
 import time
 import urllib.parse
-from typing import Any, Callable, ParamSpec, TypeVar
+from typing import Any, Callable, ParamSpec, TypeVar, Awaitable
 
 import re2
 import zoneinfo
@@ -270,7 +270,7 @@ def get_handler_with_filtered_params(system: SystemDef) -> Callable:
     return filtered_handler
 
 
-def get_handler(system: SystemDef) -> Callable:
+def get_handler(system: SystemDef) -> Callable[..., Awaitable]:
     """
     Internal function to get the base handler without parameter filtering.
 

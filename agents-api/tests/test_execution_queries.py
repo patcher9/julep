@@ -91,8 +91,8 @@ def _(
 
 
 @test("model: create execution transition")
-def _(client=cozo_client, developer_id=test_developer_id, execution=test_execution):
-    result = create_execution_transition(
+async def _(client=cozo_client, developer_id=test_developer_id, execution=test_execution):
+    result = await create_execution_transition(
         developer_id=developer_id,
         execution_id=execution.id,
         data=CreateTransitionRequest(
@@ -110,13 +110,13 @@ def _(client=cozo_client, developer_id=test_developer_id, execution=test_executi
 
 
 @test("model: create execution transition with execution update")
-def _(
+async def _(
     client=cozo_client,
     developer_id=test_developer_id,
     task=test_task,
     execution=test_execution_started,
 ):
-    result = create_execution_transition(
+    result = await create_execution_transition(
         developer_id=developer_id,
         execution_id=execution.id,
         data=CreateTransitionRequest(

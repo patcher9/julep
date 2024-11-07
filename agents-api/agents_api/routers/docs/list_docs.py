@@ -22,7 +22,7 @@ async def list_user_docs(
     sort_by: Literal["created_at", "updated_at"] = "created_at",
     direction: Literal["asc", "desc"] = "desc",
 ) -> ListResponse[Doc]:
-    docs = list_docs_query(
+    docs = await list_docs_query(
         developer_id=x_developer_id,
         owner_type="user",
         owner_id=user_id,

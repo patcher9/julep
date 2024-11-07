@@ -54,7 +54,7 @@ async def chat(
         raise NotImplementedError("Streaming is not yet implemented")
 
     # First get the chat context
-    chat_context: ChatContext = prepare_chat_context(
+    chat_context: ChatContext = await prepare_chat_context(
         developer_id=developer.id,
         session_id=session_id,
     )

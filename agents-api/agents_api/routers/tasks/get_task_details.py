@@ -2,7 +2,7 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, status
-from pycozo.client import QueryException
+from pycozo_async.client import QueryException
 
 from ...autogen.openapi_model import (
     Task,

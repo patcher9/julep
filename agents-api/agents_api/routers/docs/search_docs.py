@@ -97,7 +97,7 @@ async def search_user_docs(
     search_fn, params = get_search_fn_and_params(search_params)
 
     start = time.time()
-    docs: list[DocReference] = search_fn(
+    docs: list[DocReference] = await search_fn(
         developer_id=x_developer_id,
         owners=[("user", user_id)],
         **params,
@@ -148,7 +148,7 @@ async def search_agent_docs(
     search_fn, params = get_search_fn_and_params(search_params)
 
     start = time.time()
-    docs: list[DocReference] = search_fn(
+    docs: list[DocReference] = await search_fn(
         developer_id=x_developer_id,
         owners=[("agent", agent_id)],
         **params,

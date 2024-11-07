@@ -90,7 +90,7 @@ def dbsf_fuse(
 
 
 @beartype
-def search_docs_hybrid(
+async def search_docs_hybrid(
     *,
     developer_id: UUID,
     owners: list[tuple[Literal["user", "agent"], UUID]],
@@ -103,7 +103,7 @@ def search_docs_hybrid(
     metadata_filter: dict[str, Any] = {},
 ) -> list[DocReference]:
     # TODO: We should probably parallelize these queries
-    text_results = search_docs_by_text(
+    text_results = await search_docs_by_text(
         developer_id=developer_id,
         owners=owners,
         query=query,
@@ -112,7 +112,7 @@ def search_docs_hybrid(
         **text_search_options,
     )
 
-    embedding_results = search_docs_by_embedding(
+    embedding_results = await search_docs_by_embedding(
         developer_id=developer_id,
         owners=owners,
         query_embedding=query_embedding,

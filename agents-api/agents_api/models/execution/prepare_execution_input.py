@@ -3,7 +3,7 @@ from uuid import UUID
 
 from beartype import beartype
 from fastapi import HTTPException
-from pycozo.client import QueryException
+from pycozo_async.client import QueryException
 from pydantic import ValidationError
 
 from ...common.protocol.tasks import ExecutionInput
@@ -50,7 +50,7 @@ T = TypeVar("T")
 )
 @cozo_query
 @beartype
-def prepare_execution_input(
+async def prepare_execution_input(
     *,
     developer_id: UUID,
     task_id: UUID,
@@ -79,7 +79,7 @@ def prepare_execution_input(
     }}
     """
 
-    task_query, task_params = get_task.__wrapped__(
+    task_query, task_params = await get_task.__wrapped__(
         developer_id=developer_id, task_id=task_id
     )
 
@@ -107,7 +107,7 @@ def prepare_execution_input(
 
     dummy_agent_id = UUID(int=0)
 
-    [*_, agent_query], agent_params = get_agent.__wrapped__(
+    [*_, agent_query], agent_params = await get_agent.__wrapped__(
         developer_id=developer_id,
         agent_id=dummy_agent_id,  # We will replace this with value from the query
     )
@@ -134,7 +134,7 @@ def prepare_execution_input(
     }}
     """
 
-    [*_, tools_query], tools_params = list_tools.__wrapped__(
+    [*_, tools_query], tools_params = await list_tools.__wrapped__(
         developer_id=developer_id,
         agent_id=dummy_agent_id,  # We will replace this with value from the query
     )

@@ -3,7 +3,7 @@ from uuid import UUID
 
 from beartype import beartype
 from fastapi import HTTPException
-from pycozo.client import QueryException
+from pycozo_async.client import QueryException
 from pydantic import ValidationError
 
 from ...autogen.Chat import ChatInput
@@ -42,7 +42,7 @@ async def gather_messages(
     assert len(new_raw_messages) > 0
 
     # Get the session history
-    history: History = get_history(
+    history: History = await get_history(
         developer_id=developer.id,
         session_id=session_id,
         allowed_sources=["api_request", "api_response", "tool_response", "summarizer"],
@@ -75,7 +75,7 @@ async def gather_messages(
     user_ids = [user.id for user in chat_context.users]
     owners = [("user", user_id) for user_id in user_ids] + [("agent", active_agent_id)]
 
-    doc_references: list[DocReference] = search_docs_hybrid(
+    doc_references: list[DocReference] = await search_docs_hybrid(
         developer_id=developer.id,
         owners=owners,
         query=query_text,

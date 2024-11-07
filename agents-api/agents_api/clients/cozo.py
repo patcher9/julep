@@ -1,6 +1,6 @@
 from typing import Dict
 
-from pycozo.client import Client
+from pycozo_async.client import Client
 
 from ..env import cozo_auth, cozo_host
 from ..web import app

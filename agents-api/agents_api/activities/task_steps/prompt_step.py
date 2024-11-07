@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable
+from typing import Awaitable, Callable
 
 from anthropic import AsyncAnthropic  # Import AsyncAnthropic client
 from anthropic.types.beta.beta_message import BetaMessage
@@ -58,7 +58,9 @@ def format_tool(tool: Tool) -> dict:
     }
 
     if tool.type == "system":
-        handler: Callable = get_handler_with_filtered_params(tool.system)
+        handler: Callable[..., Awaitable] = get_handler_with_filtered_params(
+            tool.system
+        )
 
         lc_tool: BaseTool = tool_decorator(handler)
 
