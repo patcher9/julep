@@ -68,6 +68,7 @@ def create_doc(
 
     doc_data = data.model_dump()
     doc_data.pop("embed_instruction", None)
+    doc_data.pop("embeddings", None)
     content = doc_data.pop("content")
 
     doc_data["owner_type"] = owner_type

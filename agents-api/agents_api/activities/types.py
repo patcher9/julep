@@ -34,3 +34,4 @@ class EmbedDocsPayload(BaseModel):
     embed_instruction: str | None
     title: str | None = None
     include_title: bool = False  # Need to be a separate parameter for the activity
+    embeddings: list[float] | list[list[float]] | None = None

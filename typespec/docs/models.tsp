@@ -25,7 +25,6 @@ model Doc {
     content: string | string[];
 
     /** Embeddings for the document */
-    @visibility("read")
     embeddings?: float32[] | float32[][];
 }
 

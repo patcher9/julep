@@ -42,6 +42,10 @@ class CreateDocRequest(BaseModel):
     """
     Contents of the document
     """
+    embeddings: list[float] | list[list[float]] | None = None
+    """
+    Embeddings for the document
+    """
     embed_instruction: str | None = None
     """
     Instruction for the embedding model.
@@ -66,10 +70,7 @@ class Doc(BaseModel):
     """
     Contents of the document
     """
-    embeddings: Annotated[
-        list[float] | list[list[float]] | None,
-        Field(json_schema_extra={"readOnly": True}),
-    ] = None
+    embeddings: list[float] | list[list[float]] | None = None
     """
     Embeddings for the document
     """

@@ -33,10 +33,15 @@ async def embed_docs(
             ]
         )
 
-    embeddings = reduce(
-        operator.add,
-        await asyncio.gather(*[embed_batch(snippets) for snippets in batched_snippets]),
-    )
+    if payload.embeddings:
+        embeddings = [payload.embeddings]
+    else:
+        embeddings = reduce(
+            operator.add,
+            await asyncio.gather(
+                *[embed_batch(snippets) for snippets in batched_snippets]
+            ),
+        )
 
     embed_snippets_query(
         developer_id=payload.developer_id,

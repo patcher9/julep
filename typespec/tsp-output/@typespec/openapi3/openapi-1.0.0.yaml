@@ -2486,6 +2486,19 @@ components:
               items:
                 type: string
           description: Contents of the document
+        embeddings:
+          anyOf:
+            - type: array
+              items:
+                type: number
+                format: float
+            - type: array
+              items:
+                type: array
+                items:
+                  type: number
+                  format: float
+          description: Embeddings for the document
         embed_instruction:
           type: string
           nullable: true
@@ -2536,7 +2549,6 @@ components:
                   type: number
                   format: float
           description: Embeddings for the document
-          readOnly: true
     Docs.DocOwner:
       type: object
       required:

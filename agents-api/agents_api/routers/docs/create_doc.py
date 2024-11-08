@@ -21,6 +21,7 @@ async def run_embed_docs_task(
     doc_id: UUID,
     title: str,
     content: list[str],
+    embeddings: list[float] | list[list[float]] | None = None,
     embed_instruction: str | None = None,
     job_id: UUID,
     background_tasks: BackgroundTasks,
@@ -36,6 +37,7 @@ async def run_embed_docs_task(
         content=content,
         title=title,
         embed_instruction=embed_instruction,
+        embeddings=embeddings,
     )
 
     handle = await client.start_workflow(
@@ -88,6 +90,7 @@ async def create_user_doc(
         doc_id=doc.id,
         title=doc.title,
         content=doc.content,
+        embeddings=data.embeddings,
         embed_instruction=data.embed_instruction,
         job_id=embed_job_id,
         background_tasks=background_tasks,
@@ -119,6 +122,7 @@ async def create_agent_doc(
         doc_id=doc.id,
         title=doc.title,
         content=doc.content,
+        embeddings=data.embeddings,
         embed_instruction=data.embed_instruction,
         job_id=embed_job_id,
         background_tasks=background_tasks,
