@@ -49,6 +49,8 @@ model Snippet {
 }
 
 model DocReference {
+    ...HasMetadata;
+
     /** The owner of this document. */
     owner: DocOwner;
 
