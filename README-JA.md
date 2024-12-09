@@ -535,7 +535,7 @@ plot_ideas: load_yaml(_.split('\`\`\`yaml')[1].split('\`\`\`')[0].strip())
 in: _.research_queries
 する：
 ツール: research_wikipedia
-議論：
+引数:
 クエリ: _
 
 - 評価する：

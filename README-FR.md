@@ -1449,7 +1449,7 @@ Arguments:
 fichier : chaîne | tableau<string># Le fichier codé en base64 à analyser ou un tableau d'URL http/https à charger.
 nom de fichier : chaîne # (facultatif). Le nom de fichier du fichier. La valeur par défaut est un UUID aléatoire. Utilisé uniquement si le fichier est une chaîne codée en base64.
 params : dict # (facultatif) Paramètres supplémentaires pour l'intégration de Llama Parse. Remplace les paramètres de configuration.
-base64 : booléen # Indique si le fichier d'entrée est codé en base64. La valeur par défaut est false.
+base64 : booléen # Indique si le fichier d'entrée est encodé en base64. La valeur par défaut est false.
 
 sortir:
 documents : liste[Document] # Une liste de documents analysés
